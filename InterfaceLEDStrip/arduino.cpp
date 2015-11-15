@@ -109,12 +109,12 @@ void arduino::write()
         if (expected_package < TOTAL_PACKETS) {
             // copy from color_buf to output_buf
             memcpy (output_buf + 1, color_buf + (expected_package * TOTAL_DATA), TOTAL_DATA);
-            cout << "arduino::write(): sending voltage information package" << endl;
+            cout << "arduino::write(): sending LED color information package no. " << (int)expected_package << endl;
         }
         else {
             // if last packet to send, then transmit extra package (voltage_information)
             memcpy (output_buf + 1, extra_buf, TOTAL_DATA);
-            cout << "arduino::write(): sending LED color information package no. " << (int)expected_package << endl;
+            cout << "arduino::write(): sending voltage information package no." << (int)expected_package << endl;
         }
 
         output_buf[TOTAL_BYTES - 1] = (char)calcChecksum(output_buf, TOTAL_BYTES - 1);
