@@ -43,9 +43,9 @@ void arduino::write()
         else if (input_buf[0] == 'W')
             cerr << "ERROR: arduino::write(): Arduino(HW) received wrong package" << endl;
 
-        if (input_buf[0] != 'R' && input_buf[0] != 'W' && input_buf[0] != 'N')
+        if (input_buf[0] != 'R' && input_buf[0] != 'W' && input_buf[0] != 'N') {
             cerr << "ERROR: arduino::write(): Received wrong header from Arduino(HW)" << endl;
-
+        }
 
         // check if received packet_counter is valid
         if (input_buf[1] >= TOTAL_PACKETS || input_buf[1] < 0) {
@@ -58,22 +58,16 @@ void arduino::write()
 
         output_buf[0] = expected_package;
 
-        // cout << "Expected Package: " << (int)expected_package << endl;
-
-
         // check if last packet, then transmit extra package (voltage_information)
-        if (expected_package == TOTAL_PACKETS -1) {
-            memcpy (output_buf + 1, color_buf + (expected_package * TOTAL_DATA), TOTAL_DATA);
+        if (expected_package == (TOTAL_PACKETS -1)) {
+            memcpy (output_buf + 1, extra_buf, TOTAL_DATA);
         }
         else {
             // copy from color buf to output_buf
             memcpy (output_buf + 1, color_buf + (expected_package * TOTAL_DATA), TOTAL_DATA);
         }
 
-        // TODO: implement checksum here
-
         output_buf[TOTAL_BYTES - 1] = (char)calcChecksum(output_buf, TOTAL_BYTES - 1);
-        // cout << "checksum: " << (int)output_buf[TOTAL_BYTES] << endl;
 
         cout << "output: ";
         debugHEX(output_buf, TOTAL_BYTES);
@@ -144,13 +138,9 @@ void arduino::setBattVoltage(float voltage)
         float voltage;
         char bytes[4];
     } f2c;
-
-    f2c.voltage = voltage;
     */
 
-    void* float2char = &voltage;
-
-    memcpy (extra_buf, float2char, sizeof(float));
+    memcpy (extra_buf, &voltage, sizeof(float));  // sizeof(float) = 4byte
     cout << "DEBUG: float2char: " << endl;
 }
 

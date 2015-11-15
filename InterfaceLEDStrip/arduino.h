@@ -32,7 +32,7 @@ private:
     static const int INPUT_BUFFER_SIZE = 64;
 
     char *color_buf[NUMPIXELS*3];
-    char *extra_buf[];
+    char *extra_buf[TOTAL_DATA];
 
     int calcChecksum(char *frame, unsigned char frameLength) const;
 public:
