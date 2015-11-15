@@ -16,8 +16,7 @@
 */
 typedef struct {
 	char pattern[NUMPIXELS];
-	float voltage_level;
-	bool emergency_state = false;
+	float voltage_level;     
 
 } subobj_arduino_t;
 

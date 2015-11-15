@@ -34,19 +34,25 @@ private:
     char *color_buf[NUMPIXELS*3];
     char *extra_buf[TOTAL_DATA];
 
+    bool emergency_stop;
+
     int calcChecksum(char *frame, unsigned char frameLength) const;
 public:
-    arduino(char *deviceName);
+    arduino(const char *deviceName);
 
     virtual ~arduino();
     void write();
     void createColorTriple(char red, char green, char blue, char *color_buf);
     void createColorTriple(uint32_t color, char *color_buf);
     void fillColor(char *colorTriple);
-    void read(char *input_buf, unsigned int size);
-    uint32_t dimLight(uint32_t color, float factor);
+    void read(char *input_buf, unsigned int size) const;
+    // uint32_t dimLight(uint32_t color, float factor);
     void dimLight(char *color_buf, float factor);
     void setBattVoltage(float voltage);
+
+    void setEmergencyState(bool state);
+    bool getEmergencyState() const;
+
 };
 
 

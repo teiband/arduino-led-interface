@@ -30,7 +30,7 @@ private:
     /// file descriptor for the serial port
     int fd;
     /// device name of the serial port in linux, e.g. "/dev/multiplus"
-    char* deviceName;
+    const char* deviceName;
     int baudrate = B115200;    // previously B9600
     /**
      * @brief Debug function to display data frames as hex-values. The length information of the buffer is taken from the buffer itself
@@ -41,7 +41,7 @@ public:
     /** Constructor
      * @param deviceName pointer to char array with device name of the serial port
      */
-    RS232(char* deviceName);
+    RS232(const char* deviceName);
 
     /** Set the interface attributes after opening the connection
      * @param speed The baudrate of the interface, use definitions from <termios.h>. E.g. B2400 = 2400baud

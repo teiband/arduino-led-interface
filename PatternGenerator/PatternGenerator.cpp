@@ -10,7 +10,7 @@
 #include "PatternGenerator.h"
 
 
-PatternGenerator::PatternGenerator(RTDB_obj* rtdb_obj)  // see multiplus to pass rtdb obj pointer the right way
+PatternGenerator::PatternGenerator(KogniMobil::subobj_multiplus_t *rtdb_obj) : (rtdb_obj)
 {
   // read constants from xml file
 }

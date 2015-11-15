@@ -10,3 +10,9 @@ add_executable(pattern_generator
         main.cpp
 )
 
+target_link_libraries(pattern_generator
+        kogmo_rtdb
+        rt
+        ArduinoData
+)
+

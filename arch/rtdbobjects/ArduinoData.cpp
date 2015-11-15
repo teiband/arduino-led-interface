@@ -19,23 +19,16 @@ ArduinoData::
 
 }
 
-const string ArduinoData::getLEDStateString(bool onState, bool blinkState) const{
-    string state;
-    if (blinkState)
-        state = "Blink";
-    else if (onState)
-        state = "On";
-    else
-        state = "Off";
-    return state;
-}
-
 std::string ArduinoData::
 dump(void) const {
 
     std::ostringstream ostr;
 
-    ostr << "* LED Status" << endl;
+    ostr << "* LED Pattern (On='X' / Off='0')" << endl;
+    for (int i=0; i < NUMPIXELS; i++) {
+        ostr << (data->pattern != 0 ? "X" : "0");
+        ostr << (i%10 == 0 ? endl : "");
+    }
 
     ostr << endl;
 

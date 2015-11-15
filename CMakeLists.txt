@@ -6,5 +6,6 @@ cmake_minimum_required(VERSION 2.8)
 add_subdirectory(InterfaceLEDStrip)
 
 #add_subdirectory(PatternGenerator)
+#add_subdirectory(arch/rtdbobjects)
 
 

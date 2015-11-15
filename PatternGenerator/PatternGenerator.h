@@ -27,7 +27,7 @@ class PatternGenerator
 private:
 
     // Member pointer for RTDB subobject
-    KogniMobil::subobj_patternGenerator_t *pattern;
+    KogniMobil::subobj_arduino_t *rtdb_obj;
 
 public:
 

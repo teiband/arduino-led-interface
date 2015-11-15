@@ -18,10 +18,21 @@
 
 using namespace std;
 
-arduino::arduino(char* deviceName)  : COM(deviceName)
+arduino::arduino(const char *deviceName)  : COM(deviceName)
 {
     //color_buf = new char[TOTAL_BYTES];
     //extra_buf = new char[TOTAL_BYTES];
+    emergency_stop = false;
+}
+
+void arduino::setEmergencyState(bool state)
+{
+    emergency_stop = state;
+}
+
+bool arduino::getEmergencyState() const
+{
+    return emergency_stop;
 }
 
 void arduino::write()
@@ -30,7 +41,9 @@ void arduino::write()
     char input_buf[INPUT_BUFFER_SIZE];
     char expected_package = 0;
 
-    while (expected_package < TOTAL_PACKETS) {
+    bool emergency_flag = false;
+
+    while (expected_package < TOTAL_PACKETS && emergency_flag == false) {
         read(input_buf, INPUT_BUFFER_SIZE);
 
         cout << "input: ";
@@ -38,13 +51,23 @@ void arduino::write()
         cout << "input2: " << input_buf[0] << (int)input_buf[1] << endl;
 
         // check for received arduino header:
-        if (input_buf[0] == 'N')
-            cerr << "arduino::write(): Arduino(HW) expects new transmission: packet 0x00" << endl;
-        else if (input_buf[0] == 'W')
-            cerr << "ERROR: arduino::write(): Arduino(HW) received wrong package" << endl;
-
-        if (input_buf[0] != 'R' && input_buf[0] != 'W' && input_buf[0] != 'N') {
-            cerr << "ERROR: arduino::write(): Received wrong header from Arduino(HW)" << endl;
+        switch (input_buf[0]) {
+            case 'E':
+                cerr << "arduino::write(): Arduino(HW): EMERGENCY STOP occured" << endl;
+                emergency_flag = true;
+                setEmergencyState(true);
+                break;
+            case 'N':
+                cerr << "arduino::write(): Arduino(HW) expects new transmission: packet 0x00" << endl;
+                break;
+            case 'W':
+                cerr << "ERROR: arduino::write(): Arduino(HW) received wrong package" << endl;
+                break;
+            case 'R':
+                cout << "arduino.write(): received right header" << endl;
+                break;
+            default:
+                cerr << "ERROR: arduino::write(): Received wrong header from Arduino(HW)" << endl;
         }
 
         // check if received packet_counter is valid
@@ -58,13 +81,13 @@ void arduino::write()
 
         output_buf[0] = expected_package;
 
-        // check if last packet, then transmit extra package (voltage_information)
-        if (expected_package == (TOTAL_PACKETS -1)) {
-            memcpy (output_buf + 1, extra_buf, TOTAL_DATA);
-        }
-        else {
+        if (expected_package < TOTAL_PACKETS) {
             // copy from color buf to output_buf
             memcpy (output_buf + 1, color_buf + (expected_package * TOTAL_DATA), TOTAL_DATA);
+        }
+        else {
+            // if last packet to send, then transmit extra package (voltage_information)
+            memcpy (output_buf + 1, extra_buf, TOTAL_DATA);
         }
 
         output_buf[TOTAL_BYTES - 1] = (char)calcChecksum(output_buf, TOTAL_BYTES - 1);
@@ -84,14 +107,14 @@ void arduino::write()
 }
 
 
-void arduino::read(char* input_buf, unsigned int size)
+void arduino::read(char* input_buf, unsigned int size) const
 {
     COM.rs232_read(input_buf, 2, 1);
 }
 
 void arduino::createColorTriple(char red, char green, char blue, char* buf)
 {
-    //            BLUE  RED   GREEN
+    // TODO check color order
     buf[0] = red;
     buf[1] = green;
     buf[2] = blue;
@@ -99,6 +122,7 @@ void arduino::createColorTriple(char red, char green, char blue, char* buf)
 
 void arduino::createColorTriple(uint32_t color, char* buf)
 {
+    // TODO check color order
     buf[0] = (color >> 16) & 0x00110000;
     buf[1] = (color >> 8) & 0x00001100;
     buf[2] = color & 0x00000011;
@@ -144,6 +168,7 @@ void arduino::setBattVoltage(float voltage)
     cout << "DEBUG: float2char: " << endl;
 }
 
+/*
 // pass factor 0 ... 1 to dim single light color
 uint32_t arduino::dimLight(uint32_t color, float factor) {
     char r, g, b;
@@ -152,12 +177,13 @@ uint32_t arduino::dimLight(uint32_t color, float factor) {
     g = color << 8;
     b = color << 16;
 
-    r = (char)floor(r * factor);
-    g = (char)floor(g * factor);
-    b = (char)floor(b * factor);
+    r = (char)r * factor;
+    g = (char)g * factor;
+    b = (char)b * factor;
 
     return color;
 }
+*/
 
 int arduino::calcChecksum(char* frame, unsigned char frameLength) const
 {

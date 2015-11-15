@@ -14,7 +14,7 @@ using namespace std;
 
 int main()
 {
-    char *deviceName = "/dev/ttyACM0";
+    const char *deviceName = "/dev/ttyACM0";
     arduino ard(deviceName);
 
     char color[3];

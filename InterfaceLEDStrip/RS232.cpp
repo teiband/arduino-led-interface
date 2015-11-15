@@ -12,7 +12,7 @@
 
 using namespace std;
 
-RS232::RS232(char* deviceName) : deviceName(deviceName)
+RS232::RS232(const char *deviceName) : deviceName(deviceName)
 {
     if (rs232_open())
         exit(EXIT_FAILURE);
