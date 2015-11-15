@@ -20,7 +20,8 @@ using namespace std;
 
 arduino::arduino(char* deviceName)  : COM(deviceName)
 {
-    buf = new char[TOTAL_BYTES];
+    //color_buf = new char[TOTAL_BYTES];
+    //extra_buf = new char[TOTAL_BYTES];
 }
 
 void arduino::write()
@@ -29,11 +30,7 @@ void arduino::write()
     char input_buf[INPUT_BUFFER_SIZE];
     char expected_package = 0;
 
-    // bool ready = false;
-
-    while (expected_package < (TOTAL_PACKETS-1)) {
-        // set packet_counter
-
+    while (expected_package < TOTAL_PACKETS) {
         read(input_buf, INPUT_BUFFER_SIZE);
 
         cout << "input: ";
@@ -63,8 +60,15 @@ void arduino::write()
 
         // cout << "Expected Package: " << (int)expected_package << endl;
 
-        // copy from color buf to output_buf
-        memcpy (output_buf + 1, buf + (expected_package * TOTAL_DATA), TOTAL_DATA);
+
+        // check if last packet, then transmit extra package (voltage_information)
+        if (expected_package == TOTAL_PACKETS -1) {
+            memcpy (output_buf + 1, color_buf + (expected_package * TOTAL_DATA), TOTAL_DATA);
+        }
+        else {
+            // copy from color buf to output_buf
+            memcpy (output_buf + 1, color_buf + (expected_package * TOTAL_DATA), TOTAL_DATA);
+        }
 
         // TODO: implement checksum here
 
@@ -82,7 +86,6 @@ void arduino::write()
 
     cout << "------------------------------------------------------------" << endl;
     cout << "All packets transfered to Arduino!" << endl << endl;
-
 
 }
 
@@ -110,7 +113,7 @@ void arduino::createColorTriple(uint32_t color, char* buf)
 void arduino::fillColor(char* colorTriple)
 {
     for (int i=0; i < (NUMPIXELS * 3); i++) {
-        memcpy (buf + (3*i), colorTriple, 3);
+        memcpy (color_buf + (3*i), colorTriple, 3);
     }
     // cout << hex << (int)buf[0] << (int)buf[1] << (int)buf[2] << endl;
 }
@@ -132,6 +135,23 @@ void arduino::dimLight(char* buf, float factor) {
     for (int i=0; i < NUMPIXELS*3; i++) {
         buf[i] = (char)floor(buf[i] * factor);
     }
+}
+
+void arduino::setBattVoltage(float voltage)
+{
+    /*
+    union float2chars {
+        float voltage;
+        char bytes[4];
+    } f2c;
+
+    f2c.voltage = voltage;
+    */
+
+    void* float2char = &voltage;
+
+    memcpy (extra_buf, float2char, sizeof(float));
+    cout << "DEBUG: float2char: " << endl;
 }
 
 // pass factor 0 ... 1 to dim single light color
@@ -161,5 +181,5 @@ int arduino::calcChecksum(char* frame, unsigned char frameLength) const
 
 arduino::~arduino()
 {
-    delete[] buf;
+    // delete[] color_buf;
 }

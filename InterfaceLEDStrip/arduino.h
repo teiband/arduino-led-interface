@@ -20,7 +20,7 @@ class arduino {
 private:
     RS232 COM;
 
-    void debugHEX(char* buf, unsigned int length) const;
+    void debugHEX(char* color_buf, unsigned int length) const;
 
     static const char HEADER = 0x01;
     static const char MOUSE_TAG = 'M';
@@ -31,7 +31,8 @@ private:
 
     static const int INPUT_BUFFER_SIZE = 64;
 
-    char *buf;
+    char *color_buf[NUMPIXELS*3];
+    char *extra_buf[];
 
     int calcChecksum(char *frame, unsigned char frameLength) const;
 public:
@@ -39,12 +40,13 @@ public:
 
     virtual ~arduino();
     void write();
-    void createColorTriple(char red, char green, char blue, char *buf);
-    void createColorTriple(uint32_t color, char *buf);
+    void createColorTriple(char red, char green, char blue, char *color_buf);
+    void createColorTriple(uint32_t color, char *color_buf);
     void fillColor(char *colorTriple);
     void read(char *input_buf, unsigned int size);
     uint32_t dimLight(uint32_t color, float factor);
-    void dimLight(char *buf, float factor);
+    void dimLight(char *color_buf, float factor);
+    void setBattVoltage(float voltage);
 };
 
 
