@@ -1,6 +1,7 @@
 # ignore build directory
 /build
-
+# ignore qtcreator file
+*.user
 
 # Compiled Object files
 *.slo
