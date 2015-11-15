@@ -16,9 +16,6 @@ RS232::RS232(char* deviceName) : deviceName(deviceName)
 {
     if (rs232_open())
         exit(EXIT_FAILURE);
-
-    // already done in rs232_open
-    // set_interface_attr (B2400, 0);
 }
 
 void RS232::debugHEX(char *buf) const
