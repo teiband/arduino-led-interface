@@ -19,17 +19,30 @@ int main()
 
     char color[3];
 
-    ard.createColorTriple(0x06, 0x00, 0x00, color);
-    ard.fillColor(color);
-
     while(1) {
 
-        ard.createColorTriple(rand()%32, rand()%32, rand()%32, color);
-        ard.fillColor(color);
+        ard.setColor(rand()%32, rand()%32, rand()%32);
+        ard.fillColor();
         ard.write();
         sleep(2);
 
     }
+
+    /*
+    // Verbindung zur Datenbank aufbauen, unsere Zykluszeit is 33 ms
+    RTDBConn DBC("a2_roadtracker_example_cxx", 0.033, "");
+
+    // Auf Object fuer Fahrspur warten
+    C3_Ints DemoObj(DBC);
+    DemoObj.RTDBSearchWait("demo_object");
+
+    while (1)
+      {
+        DemoObj.RTDBReadWaitNext();
+        cout << DemoObj;
+        cout << "Data: " << DemoObj.getInt(0) << " ..." << endl;
+      }
+    */
 
 
 

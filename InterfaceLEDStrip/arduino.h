@@ -22,12 +22,12 @@ private:
 
     void debugHEX(char* color_buf, unsigned int length) const;
 
-    static const char HEADER = 0x01;
-    static const char MOUSE_TAG = 'M';
-    static const int TOTAL_BYTES = 32 ; // Gesamtgröße der Nachricht
-    static const int TOTAL_DATA = 30;   // Gesamtgröße der Nutzdaten
-    static const char TOTAL_PACKETS = 2;
-    static const int NUMPIXELS = 20;  // usually 240, No of LEDs on Adafruit Dotstar strip
+
+    static const int TOTAL_BYTES = 32 ;         // Size of a frame
+    static const int TOTAL_DATA = 30;           // Size of payload of a frame
+    static const int NUMPIXELS = 20;            // usually 240, No of LEDs on Adafruit Dotstar strip
+    static const char LEDS_PER_PACKAGE = 10;    // do not change, hence payload is 3*10 = 30 bytes
+    static const char TOTAL_PACKETS = NUMPIXELS / LEDS_PER_PACKAGE;
 
     static const int INPUT_BUFFER_SIZE = 64;
 
@@ -37,14 +37,20 @@ private:
     bool emergency_stop;
 
     int calcChecksum(char *frame, unsigned char frameLength) const;
+
+    char color_triple[3];
+
 public:
     arduino(const char *deviceName);
 
     virtual ~arduino();
     void write();
-    void createColorTriple(char red, char green, char blue, char *color_buf);
-    void createColorTriple(uint32_t color, char *color_buf);
-    void fillColor(char *colorTriple);
+    void setColor(const char red, const char green, const char blue);
+    void setColor(uint32_t color);
+
+    void fillColor();
+    void fillColor(const char color);
+
     void read(char *input_buf, unsigned int size) const;
     // uint32_t dimLight(uint32_t color, float factor);
     void dimLight(char *color_buf, float factor);
@@ -53,6 +59,8 @@ public:
     void setEmergencyState(bool state);
     bool getEmergencyState() const;
 
+
+    void createColorTriple(const char color);
 };
 
 

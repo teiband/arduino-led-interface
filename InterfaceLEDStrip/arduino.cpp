@@ -23,6 +23,10 @@ arduino::arduino(const char *deviceName)  : COM(deviceName)
     //color_buf = new char[TOTAL_BYTES];
     //extra_buf = new char[TOTAL_BYTES];
     emergency_stop = false;
+
+    for (int i=0; i < 3; i++)
+        color_triple[i] = 0;
+
 }
 
 void arduino::setEmergencyState(bool state)
@@ -35,6 +39,26 @@ bool arduino::getEmergencyState() const
     return emergency_stop;
 }
 
+/*
+void arduino::readRTDB_pattern()
+{
+    for(int i=0; i < (NUMPIXELS*3); i++) {
+        color = subobj.pattern[i];
+        color_buf[i*3] = (color >> 16) & 0x00110000;
+        color_buf[i*3+1] = (color >> 8) & 0x00001100;
+        color_buf[i*3+2] = color & 0x00000011;
+    }
+
+}
+*/
+
+/*
+void arduino::readRTDB_voltage()
+{
+
+}
+*/
+
 void arduino::write()
 {
     char output_buf[TOTAL_BYTES];
@@ -43,7 +67,8 @@ void arduino::write()
 
     bool emergency_flag = false;
 
-    while (expected_package < TOTAL_PACKETS && emergency_flag == false) {
+    while ((expected_package < TOTAL_PACKETS) && (emergency_flag == false)) {
+
         read(input_buf, INPUT_BUFFER_SIZE);
 
         cout << "input: ";
@@ -71,7 +96,7 @@ void arduino::write()
         }
 
         // check if received packet_counter is valid
-        if (input_buf[1] >= TOTAL_PACKETS || input_buf[1] < 0) {
+        if (input_buf[1] > TOTAL_PACKETS || input_buf[1] < 0) {
             cerr << "ERROR arduino: write(): received package_counter outside of index range" << endl;
             expected_package = 0;
         }
@@ -82,12 +107,14 @@ void arduino::write()
         output_buf[0] = expected_package;
 
         if (expected_package < TOTAL_PACKETS) {
-            // copy from color buf to output_buf
+            // copy from color_buf to output_buf
             memcpy (output_buf + 1, color_buf + (expected_package * TOTAL_DATA), TOTAL_DATA);
+            cout << "arduino::write(): sending voltage information package" << endl;
         }
         else {
             // if last packet to send, then transmit extra package (voltage_information)
             memcpy (output_buf + 1, extra_buf, TOTAL_DATA);
+            cout << "arduino::write(): sending LED color information package no. " << (int)expected_package << endl;
         }
 
         output_buf[TOTAL_BYTES - 1] = (char)calcChecksum(output_buf, TOTAL_BYTES - 1);
@@ -96,9 +123,6 @@ void arduino::write()
         debugHEX(output_buf, TOTAL_BYTES);
 
         COM.rs232_write(output_buf, TOTAL_BYTES);
-
-        cout << "output2: ";
-        debugHEX(output_buf, TOTAL_BYTES);
     }
 
     cout << "------------------------------------------------------------" << endl;
@@ -112,26 +136,53 @@ void arduino::read(char* input_buf, unsigned int size) const
     COM.rs232_read(input_buf, 2, 1);
 }
 
-void arduino::createColorTriple(char red, char green, char blue, char* buf)
+void arduino::setColor(const char red, const char green, const char blue)
 {
     // TODO check color order
-    buf[0] = red;
-    buf[1] = green;
-    buf[2] = blue;
+    color_triple[0] = red;
+    color_triple[1] = green;
+    color_triple[2] = blue;
 }
 
-void arduino::createColorTriple(uint32_t color, char* buf)
+void arduino::createColorTriple(const char color)
 {
     // TODO check color order
-    buf[0] = (color >> 16) & 0x00110000;
-    buf[1] = (color >> 8) & 0x00001100;
-    buf[2] = color & 0x00000011;
+    switch (color) {
+        case 'r':
+        case 'R':
+            setColor(0x10, 0x00, 0x00);
+            fillColor();
+            break;
+        case 'g':
+        case 'G':
+            setColor(0x00, 0x10, 0x00);
+            fillColor();
+            break;
+        case 'b':
+        case 'B':
+            setColor(0x00, 0x00, 0x10);
+            fillColor();
+            break;
+        case 'w':
+        case 'W':
+            setColor(0x10, 0x10, 0x10);
+            fillColor();
+            break;
+    }
 }
 
-void arduino::fillColor(char* colorTriple)
+void arduino::setColor(uint32_t color)
+{
+    // TODO check color order
+    color_triple[0] = (color >> 16) & 0x00110000;
+    color_triple[1] = (color >> 8) & 0x00001100;
+    color_triple[2] = color & 0x00000011;
+}
+
+void arduino::fillColor()
 {
     for (int i=0; i < (NUMPIXELS * 3); i++) {
-        memcpy (color_buf + (3*i), colorTriple, 3);
+        memcpy (color_buf + (3*i), color_triple, 3);
     }
     // cout << hex << (int)buf[0] << (int)buf[1] << (int)buf[2] << endl;
 }

@@ -11,16 +11,15 @@ ArduinoData (	class RTDBConn& DBC,
 		const int& otype) 
             : ArduinoData_T(DBC, name, otype) {
 	data = subobj_p;
+}
+
+ArduinoData::~ArduinoData(void) {
 
 }
 
-ArduinoData::
-~ArduinoData(void) {
 
-}
 
-std::string ArduinoData::
-dump(void) const {
+std::string ArduinoData::dump(void) const {
 
     std::ostringstream ostr;
 

@@ -8,6 +8,9 @@
 #endif
 
 #include <kogmo_rtdb.h>
+#include <set>
+
+
 #define NUMPIXELS 240
 
 
@@ -15,8 +18,16 @@
 /** Subobject of RTDB object, which contains payload
 */
 typedef struct {
-	char pattern[NUMPIXELS];
-	float voltage_level;
+    typedef struct stPrioPatterns {
+		uint32_t pattern[NUMPIXELS];
+    } prio;
+
+    std::set<stPrioPatterns> priority_patterns;
+
+	
+	uint32_t pattern_prio_1[NUMPIXELS];
+	uint32_t pattern_prio_2[NUMPIXELS];
+	// float voltage_level; read directly from rtdb Multiplus
 	bool emergency_state = false;
 
 } subobj_arduino_t;
