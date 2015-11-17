@@ -67,7 +67,7 @@ void arduino::write()
 
     bool emergency_flag = false;
 
-    while ((expected_package < TOTAL_PACKETS) && (emergency_flag == false)) {
+    while ((expected_package < TOTAL_LED_PACKETS) && (emergency_flag == false)) {
 
         read(input_buf, INPUT_BUFFER_SIZE);
 
@@ -81,6 +81,7 @@ void arduino::write()
                 cerr << "arduino::write(): Arduino(HW): EMERGENCY STOP occured" << endl;
                 emergency_flag = true;
                 setEmergencyState(true);
+                cout << "arduino::write(): Emergency flag set!" << endl;
                 break;
             case 'N':
                 cerr << "arduino::write(): Arduino(HW) expects new transmission: packet 0x00" << endl;
@@ -89,15 +90,15 @@ void arduino::write()
                 cerr << "ERROR: arduino::write(): Arduino(HW) received wrong package" << endl;
                 break;
             case 'R':
-                cout << "arduino.write(): received right header" << endl;
+                cout << "arduino::write(): received right header" << endl;
                 break;
             default:
                 cerr << "ERROR: arduino::write(): Received wrong header from Arduino(HW)" << endl;
         }
 
         // check if received packet_counter is valid
-        if (input_buf[1] > TOTAL_PACKETS || input_buf[1] < 0) {
-            cerr << "ERROR arduino: write(): received package_counter outside of index range" << endl;
+        if (input_buf[1] > TOTAL_LED_PACKETS || input_buf[1] < 0) {
+            cerr << "ERROR arduino::write(): received package_counter outside of index range" << endl;
             expected_package = 0;
         }
         else {
@@ -106,14 +107,14 @@ void arduino::write()
 
         output_buf[0] = expected_package;
 
-        if (expected_package < TOTAL_PACKETS) {
+        if (expected_package < TOTAL_LED_PACKETS) {
             // copy from color_buf to output_buf
             memcpy (output_buf + 1, color_buf + (expected_package * TOTAL_DATA), TOTAL_DATA);
             cout << "arduino::write(): sending LED color information package no. " << (int)expected_package << endl;
         }
         else {
             // if last packet to send, then transmit extra package (voltage_information)
-            memcpy (output_buf + 1, extra_buf, TOTAL_DATA);
+            memcpy (output_buf + 1, voltage_buf, TOTAL_DATA);
             cout << "arduino::write(): sending voltage information package no." << (int)expected_package << endl;
         }
 
@@ -138,45 +139,42 @@ void arduino::read(char* input_buf, unsigned int size) const
 
 void arduino::setColor(const char red, const char green, const char blue)
 {
-    // TODO check color order
-    color_triple[0] = red;
+    // color order is defined in arduino constant DOTSTAR_RGB
+    color_triple[0] = blue;
     color_triple[1] = green;
-    color_triple[2] = blue;
+    color_triple[2] = red;
 }
 
-void arduino::createColorTriple(const char color)
+void arduino::setColor(const char color)
 {
     // TODO check color order
     switch (color) {
         case 'r':
         case 'R':
             setColor(0x10, 0x00, 0x00);
-            fillColor();
             break;
         case 'g':
         case 'G':
             setColor(0x00, 0x10, 0x00);
-            fillColor();
             break;
         case 'b':
         case 'B':
             setColor(0x00, 0x00, 0x10);
-            fillColor();
             break;
         case 'w':
         case 'W':
             setColor(0x10, 0x10, 0x10);
-            fillColor();
             break;
     }
 }
 
 void arduino::setColor(uint32_t color)
 {
-    // TODO check color order
-    color_triple[0] = (color >> 16) & 0x00110000;
-    color_triple[1] = (color >> 8) & 0x00001100;
-    color_triple[2] = color & 0x00000011;
+    // TODO check color order, compare with color generation part to shift in right way
+    uint32_t bit_mask = 0x000011;
+    color_triple[0] = color & bit_mask;
+    color_triple[1] = (color >> 8) & bit_mask;
+    color_triple[2] = (color >> 16) & bit_mask;
 }
 
 void arduino::fillColor()
@@ -208,15 +206,26 @@ void arduino::dimLight(char* buf, float factor) {
 
 void arduino::setBattVoltage(float voltage)
 {
-    /*
-    union float2chars {
-        float voltage;
-        char bytes[4];
-    } f2c;
-    */
+    // DEBUG function to set a voltage level
+    processBattVoltage(voltage);
+}
 
-    memcpy (extra_buf, &voltage, sizeof(float));  // sizeof(float) = 4byte
-    cout << "DEBUG: float2char: " << endl;
+void arduino::processBattVoltage(float voltage)
+{
+    // DEBUG function to display voltage level
+    float max_voltage = 30.0;
+    char num_pixels = voltage / max_voltage *8;
+
+    for (int i=0; i < num_pixels; i++) {
+        voltage_buf[i*3] = 0x00;
+        voltage_buf[i*3+1] = 0x10;
+        voltage_buf[i*3+2] = 0x00;
+    }
+    for (int i=num_pixels; i < 8; i++) {
+        voltage_buf[i*3] = 0x10;
+        voltage_buf[i*3+1] = 0x00;
+        voltage_buf[i*3+2] = 0x00;
+    }
 }
 
 /*
@@ -248,5 +257,5 @@ int arduino::calcChecksum(char* frame, unsigned char frameLength) const
 
 arduino::~arduino()
 {
-    // delete[] color_buf;
+
 }

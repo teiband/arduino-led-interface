@@ -21,10 +21,15 @@ int main()
 
     while(1) {
 
-        ard.setColor(rand()%32, rand()%32, rand()%32);
+        ard.setColor(rand()%20, rand()%20, rand()%20);
+        // ard.setColor(0x00,0x00,0x01);
+        // ard.setColor('r');
         ard.fillColor();
+
+        ard.setBattVoltage(rand()%30);
+
         ard.write();
-        sleep(2);
+        sleep(1);
 
     }
 

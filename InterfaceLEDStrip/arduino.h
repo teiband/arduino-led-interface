@@ -25,14 +25,14 @@ private:
 
     static const int TOTAL_BYTES = 32 ;         // Size of a frame
     static const int TOTAL_DATA = 30;           // Size of payload of a frame
-    static const int NUMPIXELS = 20;            // usually 240, No of LEDs on Adafruit Dotstar strip
+    static const int NUMPIXELS = 240;           // usually 240, No of LEDs on Adafruit Dotstar strip
     static const char LEDS_PER_PACKAGE = 10;    // do not change, hence payload is 3*10 = 30 bytes
-    static const char TOTAL_PACKETS = NUMPIXELS / LEDS_PER_PACKAGE;
+    static const char TOTAL_LED_PACKETS = NUMPIXELS / LEDS_PER_PACKAGE;
 
     static const int INPUT_BUFFER_SIZE = 64;
 
-    char *color_buf[NUMPIXELS*3];
-    char *extra_buf[TOTAL_DATA];
+    char color_buf[NUMPIXELS*3];
+    char voltage_buf[TOTAL_DATA];
 
     bool emergency_stop;
 
@@ -40,12 +40,14 @@ private:
 
     char color_triple[3];
 
+    void processBattVoltage(float voltage);
 public:
     arduino(const char *deviceName);
 
     virtual ~arduino();
     void write();
     void setColor(const char red, const char green, const char blue);
+    void setColor(const char color);
     void setColor(uint32_t color);
 
     void fillColor();
