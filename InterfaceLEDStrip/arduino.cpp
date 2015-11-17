@@ -69,7 +69,7 @@ void arduino::write()
 
     while ((expected_package < TOTAL_LED_PACKETS) && (emergency_flag == false)) {
 
-        read(input_buf, INPUT_BUFFER_SIZE);
+        read(input_buf, TOTAL_RECEIVED_BYTES);
 
         cout << "input: ";
         debugHEX(input_buf, 2);
@@ -134,7 +134,7 @@ void arduino::write()
 
 void arduino::read(char* input_buf, unsigned int size) const
 {
-    COM.rs232_read(input_buf, 2, 1);
+    COM.rs232_read(input_buf, size, 1);
 }
 
 void arduino::setColor(const char red, const char green, const char blue)
@@ -189,7 +189,7 @@ void arduino::debugHEX(char *buf, unsigned int length) const
 {
     printf("DEBUG-HEX: ");
 
-    for (int i=0; i < length; i++) {
+    for (int i=0; i < (int)length; i++) {
         printf("0x%X,", (unsigned char)buf[i]);
     }
 

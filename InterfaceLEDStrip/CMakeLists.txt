@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 2.8)
 
 include_directories(.)
 
-add_executable(arduino
+add_executable(arduino-led-interface
         arduino.cpp
         main.cpp
         RS232.cpp

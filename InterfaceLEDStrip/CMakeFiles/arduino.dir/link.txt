@@ -1,0 +1,1 @@
+/usr/bin/c++   -Wall -Wextra -O2 -g -pipe -fno-strict-aliasing -D_GNU_SOURCE -D_REENTRANT    CMakeFiles/arduino.dir/arduino.cpp.o CMakeFiles/arduino.dir/main.cpp.o CMakeFiles/arduino.dir/RS232.cpp.o  -o ../../../../bin/arduino  -L/home/teiband/wearhap/lib  -L/home/teiband/wearhap/opt/jstest-gtk/lib -rdynamic 

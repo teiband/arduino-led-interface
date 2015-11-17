@@ -25,7 +25,7 @@ void RS232::debugHEX(char *buf) const
     }
 }
 
-int RS232::set_interface_attr(int speed, int parity) const
+int RS232::set_interface_attr(int speed) const
 {
 
     /* Set up the control structure */
@@ -84,7 +84,7 @@ int RS232::rs232_open(void)
   else
   {
     cout << "RS232: Open port: " << deviceName << endl;
-    if (set_interface_attr(baudrate, 0))
+    if (set_interface_attr(baudrate))
         return 1;
     return 0;
   }
@@ -126,41 +126,7 @@ int RS232::rs232_read(char* buf, unsigned int size, unsigned int time) const
     int n = read(fd, buf, size);
     cout << "DEBUG RS232: " << n << " bytes received" << endl;
 
-    // tcflush(fd,TCIFLUSH);
-
-    /*
-    u_int16_t n = 0;
-    fd_set set;
-    int rv;
-
-    struct timeval timeout;
-    timeout.tv_usec = time * 1000;
-
-    FD_ZERO(&set);
-    FD_SET(fd, &set);
-
-    // Maximum Response Time in u-seconds
-    usleep(time*1000);
-
-    rv = select(fd + 1, &set, NULL, NULL, &timeout);
-
-    if(rv == -1)
-        cerr << "ERROR RS232: read error" << endl;
-    else if(rv == 0)
-        cerr << "ERROR RS232: read timeout" << endl;
-    else {
-        n = read(fd, buf, size);
-        // cout << "DEBUG RS232: " << n << " bytes read" << endl;
-        // debugHEX(buf);
-    }
-
-    if (n <= 0) {
-        cerr << "ERROR RS232: no bytes received" << endl;
-        exit(EXIT_FAILURE);
-    }
-    else
-        return n;
-    */
+    return 0;
 }
 
 RS232::~RS232()

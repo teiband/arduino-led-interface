@@ -17,8 +17,6 @@ int main()
     const char *deviceName = "/dev/ttyACM0";
     arduino ard(deviceName);
 
-    char color[3];
-
     while(1) {
 
         ard.setColor(rand()%20, rand()%20, rand()%20);

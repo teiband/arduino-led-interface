@@ -47,7 +47,7 @@ public:
      * @param speed The baudrate of the interface, use definitions from <termios.h>. E.g. B2400 = 2400baud
      * @param parity Parity of the interface, 0 = false, 1 = true
      */
-    int set_interface_attr (int speed, int parity) const;
+    int set_interface_attr (int speed) const;
     // u_int8_t set_blocking (u_int16_t number, int time);
 
     /** Opens the serial port

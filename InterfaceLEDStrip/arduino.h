@@ -29,6 +29,8 @@ private:
     static const char LEDS_PER_PACKAGE = 10;    // do not change, hence payload is 3*10 = 30 bytes
     static const char TOTAL_LED_PACKETS = NUMPIXELS / LEDS_PER_PACKAGE;
 
+    static const char TOTAL_RECEIVED_BYTES = 2;
+
     static const int INPUT_BUFFER_SIZE = 64;
 
     char color_buf[NUMPIXELS*3];
