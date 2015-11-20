@@ -33,8 +33,13 @@ private:
 
     static const int INPUT_BUFFER_SIZE = 64;
 
+    static const int PATTERN_DEPTH = 4;
+
     char color_buf[NUMPIXELS*3];
     char voltage_buf[TOTAL_DATA];
+
+    // for thread implementation, 3 colors, 1 prio
+    char pattern[NUMPIXELS][4];
 
     bool emergency_stop;
 
@@ -65,6 +70,8 @@ public:
 
 
     void createColorTriple(const char color);
+
+    void setPattern(char pattern[][PATTERN_DEPTH]);
 };
 
 

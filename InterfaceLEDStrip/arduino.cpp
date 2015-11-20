@@ -39,6 +39,11 @@ bool arduino::getEmergencyState() const
     return emergency_stop;
 }
 
+void arduino::setPattern(char pattern[][PATTERN_DEPTH])
+{
+    std::copy(&pattern[0][0], &pattern[0][0]+NUMPIXELS*PATTERN_DEPTH, &this->pattern[0][0]);
+}
+
 /*
 void arduino::readRTDB_pattern()
 {
