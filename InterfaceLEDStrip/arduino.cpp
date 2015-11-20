@@ -39,9 +39,25 @@ bool arduino::getEmergencyState() const
     return emergency_stop;
 }
 
-void arduino::setPattern(char pattern[][PATTERN_DEPTH])
+void arduino::setPattern(pattern_t &pattern)
 {
     std::copy(&pattern[0][0], &pattern[0][0]+NUMPIXELS*PATTERN_DEPTH, &this->pattern[0][0]);
+}
+
+void arduino::decreasePrio()
+{
+    // decrease prio of each pixel by one
+    for (int i=0; i < pattern.size(); i++) {
+        pattern[i][PATTERN_DEPTH-1] > 0 ? (pattern[i][PATTERN_DEPTH-1]-= 1) : 0;
+    }
+}
+
+void arduino::pattern2color_buf()
+{
+    for (int i=0; i < pattern.size(); i++) {
+        memcpy(color_buf, &(pattern[i][0]), 3);
+    }
+
 }
 
 /*
@@ -82,7 +98,7 @@ void arduino::write()
 
         // check for received arduino header:
         switch (input_buf[0]) {
-            case 'E':
+            case 'E':   // TODO implement that in arduino!!!
                 cerr << "arduino::write(): Arduino(HW): EMERGENCY STOP occured" << endl;
                 emergency_flag = true;
                 setEmergencyState(true);
@@ -152,7 +168,6 @@ void arduino::setColor(const char red, const char green, const char blue)
 
 void arduino::setColor(const char color)
 {
-    // TODO check color order
     switch (color) {
         case 'r':
         case 'R':

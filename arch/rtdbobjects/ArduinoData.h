@@ -1,6 +1,8 @@
 #ifndef __ARDUINODATA_H__
 #define __ARDUINODATA_H__
 
+
+
 #ifdef __cplusplus
 	#include <kogmo_rtdb.hxx>
 	namespace KogniMobil {
@@ -8,28 +10,14 @@
 #endif
 
 #include <kogmo_rtdb.h>
-#include <set>
-
-
-#define NUMPIXELS 240
-
-
+#include <array>
+#include "../../InterfaceLEDStrip/arduino_config.h"
 
 /** Subobject of RTDB object, which contains payload
 */
 typedef struct {
-    typedef struct stPrioPatterns {
-		uint32_t pattern[NUMPIXELS];
-    } prio;
-
-    std::set<stPrioPatterns> priority_patterns;
-
-	
-	uint32_t pattern_prio_1[NUMPIXELS];
-	uint32_t pattern_prio_2[NUMPIXELS];
-	// float voltage_level; read directly from rtdb Multiplus
-	bool emergency_state = false;
-
+    std::array< std::array<char, PATTERN_DEPTH>, NUMPIXELS> pattern;
+    bool emergency_state = false;
 } subobj_arduino_t;
 
 /** RTDB object, which contains the subobject and additional information for the database
