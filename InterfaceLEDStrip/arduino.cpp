@@ -41,14 +41,17 @@ bool arduino::getEmergencyState() const
 
 void arduino::setPattern(pattern_t &pattern)
 {
-    std::copy(&pattern[0][0], &pattern[0][0]+NUMPIXELS*PATTERN_DEPTH, &this->pattern[0][0]);
+    this->pattern = pattern;
 }
 
-void arduino::decreasePrio()
+void arduino::decreasePrio(pattern_t &pattern)
 {
     // decrease prio of each pixel by one
     for (int i=0; i < pattern.size(); i++) {
-        pattern[i][PATTERN_DEPTH-1] > 0 ? (pattern[i][PATTERN_DEPTH-1]-= 1) : 0;
+        if (pattern[i][PATTERN_DEPTH-1] > 0) {
+            --pattern[i][PATTERN_DEPTH-1];
+        }
+
     }
 }
 
@@ -58,6 +61,16 @@ void arduino::pattern2color_buf()
         memcpy(color_buf, &(pattern[i][0]), 3);
     }
 
+}
+
+void arduino::updatePattern(pattern_t &pattern, pattern_t &new_pattern)
+{
+    // update a pixel if new priority is higher than existing one
+    for (int i=0; i < pattern.size(); i++) {
+        if (new_pattern[i][PATTERN_DEPTH-1] > pattern[i][PATTERN_DEPTH-1]) {
+            pattern[i] = new_pattern[i];
+        }
+    }
 }
 
 /*

@@ -1,4 +1,3 @@
-
 /*
  * main.cpp
  *
@@ -28,40 +27,30 @@ int main(int argc, char *argv[])
 {
     cout << "Establishing database connection ..." << endl;
     RTDBConn DBC("Arduino", 5.0);
-    if (verbose_mode)
-    cout << "Database connection established!" << endl << endl;
+    cout << "done" << endl << endl;
 
-    // Create rtdb database object with name MultiPlusData
     ArduinoData rtdb_obj(DBC, "ArduinoData");
 
-    // create object with serial connection to device and pointer to database subobject
-    cout << "Create Arduino object and establish serial connection ..." << endl;
     PatternGenerator pg(rtdb_obj.subobj_p);
-    cout << "Connected to Multiplus" << endl << endl;
 
-    rtdb_obj.RTDBInsert();
+    cout << "Searching RTDB object \"ArduinoData\"... ";
+    Road.RTDBSearchWait("a2_eigenfahrspur");
+    cout << "done" << endl;
 
-    cout << "Start infinite loop and write periodically to database ..." << endl << endl;
-    for(;;) {
+    cout << "Entering loop and generating some patterns" << endl;
+    while (1) {
 
-        cout << "Multiplus.update() ..." << endl << endl;
-        mp.update();
-        cout << endl << "MultiplusData object updated!" << endl << endl;
+        // TODO implement funcionality
+        pg.update();
 
-        /*
-        //dummy for database testing
-        rtdb_obj.subobj_p->Blink.mains = false;
-        rtdb_obj.subobj_p->On.mains = !rtdb_obj.subobj_p->On.mains;
-        */
-
-        cout << "Write to RTDB ..." << endl << endl;
+        cout << "Write to RTDB ...";
         rtdb_obj.RTDBWrite();
-        cout << "Write to RTDB successfull!" << endl << endl;
+        cout << "done" << endl;
         sleep(1);
 
         // wait until cycle done
+        // (signal for ReadWaitNext() in Arduino main)
         DBC.CycleDone();
     }
-
     return 0;
 }

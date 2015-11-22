@@ -45,6 +45,7 @@ private:
     char voltage_buf[TOTAL_DATA];
 
     // for thread implementation, 3 colors, 1 prio;
+    pattern_t shared_pattern;
     pattern_t pattern;
 
     bool emergency_stop;
@@ -77,9 +78,15 @@ public:
     void createColorTriple(const char color);
 
     void setPattern(pattern_t &pattern);
+    void setPattern();
 
-    void decreasePrio();
+    void setSharedPattern(pattern_t &shared_pattern);
+
+    void decreasePrio(pattern_t &pattern);
     void pattern2color_buf();
+
+    void updatePattern(pattern_t &pattern, pattern_t &new_pattern);
+
 };
 
 

@@ -1,3 +1,14 @@
+/*
+ * main.cpp
+ *
+ *  Created on: 22 Nov 2015
+ *      Author: Thomas Eiband
+ *
+ *      thomas.eiband@tum.de
+ */
+
+
+#include "main.h"
 #include <iostream>
 
 // TODO: check this
@@ -5,13 +16,20 @@
 #include <stdint.h>
 #include "arduino.h"
 #include "arduino_config.h"                     // TODO change path to global (see multiplus)
-// #include "../arch/rtdbobjects/ArduinoData.h"    // TODO change path to global (see multiplus)
+//#include "../arch/rtdbobjects/ArduinoData.h"    // TODO change path to global (see multiplus)
 #include <getopt.h>
 #include <iostream>
 #include <unistd.h> // for sleep()
 
 #include <thread>
 #include <mutex>
+
+/*
+* 1. source setup.sh
+* 2. rtdb-start
+* 3. multiplus --device /dev/multiplus
+* 4. IceServerViewer & GuiViewer
+*/
 
 using namespace std;
 
@@ -21,46 +39,46 @@ typedef struct {
     bool emergency_state = false;
 } subobj_arduino_t;
 
-void databaseThread(mutex &ard_mutex, arduino *ard, subobj_arduino_t *rtdb_subobj)
+void databaseThread(mutex &ard_mutex, arduino *ard, KogniMobil::subobj_arduino_t *shared_data, ArduinoData *rtdb_obj)
 {
-    bool emergency_state = false;
+    cout << "done" << endl;
+    KogniMobil::subobj_arduino_t *data = rtdb_obj.subobj_p;
 
     while(1) {
         // read from database, readWaitNext;
         // implement timeout here, important when emergency stop occurs
 
-        cout << "main:databaseThread: wating for read RTDB... ";
-        rtdb_obj.RTDBReadWaitNext();
-        cout << "successfull!" << endl << endl;
+        cout << "main:databaseThread: wating for RTDB read... ";
+        rtdb_obj->RTDBReadWaitNext();
+        cout << "done" << endl << endl;
 
         // dummy color
         std::array<char, PATTERN_DEPTH> color;
 
         // std::lock_guard<std::mutex> guard(ard_mutex);
         ard_mutex.lock();
+        // ----------------------------------------------------
         // read or write to protected memory here
-        std::fill(rtdb_subobj->pattern.begin(), rtdb_subobj->pattern.end(), color);   // dummy write
-
+        ard->updatePattern(*(data->pattern), *(shared_data));    // update a pixel if its new priority is higher than the current one
+        data->emergency_state = shared_data->emergency_state;   // write emergency state to rtdb object
         // emergency state can be reset from here
         // rtdb_subobj->emergency_state = ard->setEmergencyState();
+        // ----------------------------------------------------
         ard_mutex.unlock();
-
-        // write emergency_state to database
-
-        // wait until cycle done
-        // TODO implement in which thread?
-        DBC.CycleDone();
     }
 }
 
-void arduinoThread(mutex &ard_mutex, arduino *ard, subobj_arduino_t *rtdb_subobj)
+void arduinoThread(mutex &ard_mutex, arduino *ard, KogniMobil::subobj_arduino_t *shared_data)
 {
+    cout << "done" << endl;
     while(1) {
         ard_mutex.lock();
+        // ----------------------------------------------------
         // read or write to protected memory here
-        ard->setPattern(rtdb_subobj->pattern);
-        ard->decreasePrio();
-        rtdb_subobj->emergency_state = ard->getEmergencyState();
+        ard->setPattern(*(shared_data->pattern));
+        ard->decreasePrio(*(shared_data->pattern);
+        shared_data->emergency_state = ard->getEmergencyState();
+        // ----------------------------------------------------
         ard_mutex.unlock();
 
         ard->pattern2color_buf();
@@ -76,71 +94,29 @@ int main()
 
     const char *deviceName = "/dev/ttyACM0";
     arduino ard(deviceName);
-
     std::mutex ard_mutex;
-
-    // establish rtdb connection here
-
-    subobj_arduino_t *rtdb_subobj;   // dummy object
 
     cout << "Establishing database connection ..." << endl;
     RTDBConn DBC("Arduino", 10.0);
-
-    cout << "Database connection established!" << endl << endl;
+    cout << "done" << endl << endl;
 
     // Create rtdb database object with name ArduinoData
     ArduinoData rtdb_obj(DBC, "ArduinoData");
-
-    // insert here or in pattern generator? no duplicates allowed!
     rtdb_obj.RTDBInsert();
 
-    rtdb_obj.RTDBSearchWait("ArduinoData");
-
+    // Init shared data object for both threads
+    KogniMobil::subobj_arduino_t shared_data;
 
     // start two parallel threads
-    std::thread dT(databaseThread, std::ref(ard_mutex), &ard, rtdb_subobj);
-    std::thread aT(arduinoThread, std::ref(ard_mutex), &ard, rtdb_subobj);
+    cout << "Starting database thread... ";
+    std::thread dT(databaseThread, std::ref(ard_mutex), &ard, &shared_data, &rtdb_obj);
+    cout << "Starting arduino thread ...";
+    std::thread aT(arduinoThread, std::ref(ard_mutex), &ard, &shared_data);
 
     /*
     dT.join();
     aT.join();
     */
-
-    // test without thread
-    /*
-    while(1) {
-
-        ard.setColor(rand()%20, rand()%20, rand()%20);
-        // ard.setColor(0x00,0x00,0x01);
-        // ard.setColor('r');
-        ard.fillColor();
-
-        ard.setBattVoltage(rand()%30);
-
-        ard.write();
-        sleep(1);
-
-    }
-    */
-
-    /*
-    // Verbindung zur Datenbank aufbauen, unsere Zykluszeit is 33 ms
-    RTDBConn DBC("a2_roadtracker_example_cxx", 0.033, "");
-
-    // Auf Object fuer Fahrspur warten
-    C3_Ints DemoObj(DBC);
-    DemoObj.RTDBSearchWait("demo_object");
-
-    while (1)
-      {
-        DemoObj.RTDBReadWaitNext();
-        cout << DemoObj;
-        cout << "Data: " << DemoObj.getInt(0) << " ..." << endl;
-      }
-    */
-
-
-
 }
 
 
