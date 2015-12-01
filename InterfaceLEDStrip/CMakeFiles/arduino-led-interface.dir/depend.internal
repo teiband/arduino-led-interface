@@ -8,7 +8,49 @@ src/actuators/arduino-led-interface/InterfaceLEDStrip/CMakeFiles/arduino-led-int
  /home/teiband/wearhap/src/actuators/arduino-led-interface/InterfaceLEDStrip/RS232.h
  /home/teiband/wearhap/src/actuators/arduino-led-interface/InterfaceLEDStrip/arduino.cpp
  /home/teiband/wearhap/src/actuators/arduino-led-interface/InterfaceLEDStrip/arduino.h
+ /home/teiband/wearhap/src/actuators/arduino-led-interface/InterfaceLEDStrip/arduino_config.h
 src/actuators/arduino-led-interface/InterfaceLEDStrip/CMakeFiles/arduino-led-interface.dir/main.cpp.o
  /home/teiband/wearhap/src/actuators/arduino-led-interface/InterfaceLEDStrip/RS232.h
  /home/teiband/wearhap/src/actuators/arduino-led-interface/InterfaceLEDStrip/arduino.h
+ /home/teiband/wearhap/src/actuators/arduino-led-interface/InterfaceLEDStrip/arduino_config.h
  /home/teiband/wearhap/src/actuators/arduino-led-interface/InterfaceLEDStrip/main.cpp
+ /home/teiband/wearhap/src/actuators/arduino-led-interface/InterfaceLEDStrip/main.h
+ opt/kogmo-rtdb/include/kogmo_rtdb.h
+ opt/kogmo-rtdb/include/kogmo_rtdb.hxx
+ opt/kogmo-rtdb/include/kogmo_rtdb_conn.hxx
+ opt/kogmo-rtdb/include/kogmo_rtdb_funcs.h
+ opt/kogmo-rtdb/include/kogmo_rtdb_obj_base.h
+ opt/kogmo-rtdb/include/kogmo_rtdb_obj_base.id
+ opt/kogmo-rtdb/include/kogmo_rtdb_obj_base_classes.hxx
+ opt/kogmo-rtdb/include/kogmo_rtdb_obj_base_funcs.h
+ opt/kogmo-rtdb/include/kogmo_rtdb_obj_base_system_classes.hxx
+ opt/kogmo-rtdb/include/kogmo_rtdb_obj_dump.hxx
+ opt/kogmo-rtdb/include/kogmo_rtdb_obj_tids.h
+ opt/kogmo-rtdb/include/kogmo_rtdb_types.h
+ opt/kogmo-rtdb/include/kogmo_time.h
+ opt/kogmo-rtdb/include/kogmo_time.hxx
+ src/actuators/arduino-led-interface/InterfaceLEDStrip/arduino_config.h
+ src/arch/rtdbobjects/ArduinoData.h
+ src/arch/rtdbobjects/FORTHHandConfig.h
+ src/arch/rtdbobjects/IMUData.h
+ src/arch/rtdbobjects/LocomotionCommand.h
+ src/arch/rtdbobjects/LocomotionData.h
+ src/arch/rtdbobjects/ManipulationCommand.h
+ src/arch/rtdbobjects/ManipulationData.h
+ src/arch/rtdbobjects/MoCapData.h
+ src/arch/rtdbobjects/MultiPlusData.h
+ src/arch/rtdbobjects/Pos2d.h
+ src/arch/rtdbobjects/Pos3d.h
+ src/arch/rtdbobjects/Pose2d.h
+ src/arch/rtdbobjects/Pose3d.h
+ src/arch/rtdbobjects/Posture7d.h
+ src/arch/rtdbobjects/Quaternion.h
+ src/arch/rtdbobjects/RTDBObject.h
+ src/arch/rtdbobjects/Scalar.h
+ src/arch/rtdbobjects/Transform.h
+ src/arch/rtdbobjects/Vector3d.h
+ src/arch/rtdbobjects/Vel2d.h
+ src/arch/rtdbobjects/VibroWristCommand.h
+ src/arch/rtdbobjects/VibroWristStatus.h
+ src/arch/rtdbobjects/WarningState.h
+ src/arch/rtdbobjects/Wrench.h

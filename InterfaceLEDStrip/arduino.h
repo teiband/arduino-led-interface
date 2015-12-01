@@ -15,14 +15,6 @@
 #include <array>
 #include "RS232.h"
 
-typedef std::array< std::array<char, PATTERN_DEPTH>, NUMPIXELS> pattern_t;
-
-/* as in ArduinoData.h
-typedef struct {
-    std::array< std::array<char, PATTERN_DEPTH>, NUMPIXELS> pattern;
-} subobj_arduino_t;
-*/
-
 class arduino {
 private:
     RS232 COM;

@@ -12,6 +12,8 @@ SET(CMAKE_CXX_COMPILER_ID "GNU")
 
 # Targets to which this target links.
 SET(CMAKE_TARGET_LINKED_INFO_FILES
+  "/home/teiband/wearhap/opt/kogmo-rtdb/rtdb/CMakeFiles/kogmo_rtdb.dir/DependInfo.cmake"
+  "/home/teiband/wearhap/src/arch/rtdbobjects/CMakeFiles/ArduinoData.dir/DependInfo.cmake"
   )
 
 # The include file search paths:

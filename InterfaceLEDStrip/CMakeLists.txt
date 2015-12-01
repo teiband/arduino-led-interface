@@ -11,3 +11,8 @@ add_executable(arduino-led-interface
         RS232.cpp
 )
 
+target_link_libraries(arduino-led-interface
+        kogmo_rtdb
+        rt
+        ArduinoData
+)

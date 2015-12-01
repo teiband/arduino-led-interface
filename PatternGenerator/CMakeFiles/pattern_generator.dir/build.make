@@ -113,6 +113,7 @@ bin/pattern_generator: src/actuators/arduino-led-interface/PatternGenerator/CMak
 bin/pattern_generator: src/actuators/arduino-led-interface/PatternGenerator/CMakeFiles/pattern_generator.dir/main.cpp.o
 bin/pattern_generator: src/actuators/arduino-led-interface/PatternGenerator/CMakeFiles/pattern_generator.dir/build.make
 bin/pattern_generator: lib/libkogmo_rtdb.so
+bin/pattern_generator: lib/libArduinoData.so
 bin/pattern_generator: src/actuators/arduino-led-interface/PatternGenerator/CMakeFiles/pattern_generator.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --red --bold "Linking CXX executable ../../../../bin/pattern_generator"
 	cd /home/teiband/wearhap/src/actuators/arduino-led-interface/PatternGenerator && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/pattern_generator.dir/link.txt --verbose=$(VERBOSE)

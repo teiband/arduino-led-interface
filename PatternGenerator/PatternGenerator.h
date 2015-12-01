@@ -31,19 +31,17 @@ class PatternGenerator
 {
 private:
 
-    // Member pointer for RTDB subobject
-    KogniMobil::subobj_arduino_t *rtdb_obj;
-    array <char, 4> color;
-    pattern_t pattern;
+    color_t color;
+    pattern_t &pattern;
 
 
     void copy2pattern(int i);
     void checkRange(int i);
 public:
 
-    PatternGenerator();
+    PatternGenerator(pattern_t &pattern);
 
-    void setRawPattern(pattern_t pattern);
+    void setRawPattern(pattern_t &pattern);
     void setFillPattern(unsigned int spacing = 0);
 
     void setFillArea(unsigned int start, unsigned int end, unsigned int spacing = 0);

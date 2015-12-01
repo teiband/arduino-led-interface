@@ -12,12 +12,13 @@
 using namespace std;
 
 
-PatternGenerator::PatternGenerator(KogniMobil::subobj_multiplus_t *rtdb_obj) : (rtdb_obj)
+PatternGenerator::PatternGenerator(pattern_t &pattern) : pattern(pattern)
 {
-  // TODO read constants from xml file?
+    // TODO read constants from xml file?
+    color.reserve(4);
 }
 
-void PatternGenerator::setRawPattern(pattern_t pattern)
+void PatternGenerator::setRawPattern(pattern_t &pattern)
 {
     this->pattern = pattern;
 }
@@ -82,10 +83,10 @@ void PatternGenerator::debugPattern(int flag) const
             cout << (int)pattern[i][0] << ", " << pattern[i][1] << ", " << pattern[i][2] << ", " << pattern[i][3] << endl;
         }
         else {
-            cout << pattern[i][0] > 0 ? 'X' : '0';
-            cout << pattern[i][1] > 0 ? 'X' : '0';
-            cout << pattern[i][2] > 0 ? 'X' : '0';
-            cout << pattern[i][3] > 0 ? 'X' : '0';
+            cout << (pattern[i][0] > 0 ? 'X' : '0');
+            cout << (pattern[i][1] > 0 ? 'X' : '0');
+            cout << (pattern[i][2] > 0 ? 'X' : '0');
+            cout << (pattern[i][3] > 0 ? 'X' : '0');
         }
 
     }
@@ -93,7 +94,7 @@ void PatternGenerator::debugPattern(int flag) const
 }
 
 
-// pass factor 0 ... 1 to dim light color array
+// pass factor 0 ... 1 to dim light color pattern
 void PatternGenerator::dimLight(char* buf, float factor) {
     for (int i=0; i < NUMPIXELS; i++) {
         for (int j=0; j < 3; j++) {

@@ -137,6 +137,8 @@ bin/arduino-led-interface: src/actuators/arduino-led-interface/InterfaceLEDStrip
 bin/arduino-led-interface: src/actuators/arduino-led-interface/InterfaceLEDStrip/CMakeFiles/arduino-led-interface.dir/main.cpp.o
 bin/arduino-led-interface: src/actuators/arduino-led-interface/InterfaceLEDStrip/CMakeFiles/arduino-led-interface.dir/RS232.cpp.o
 bin/arduino-led-interface: src/actuators/arduino-led-interface/InterfaceLEDStrip/CMakeFiles/arduino-led-interface.dir/build.make
+bin/arduino-led-interface: lib/libkogmo_rtdb.so
+bin/arduino-led-interface: lib/libArduinoData.so
 bin/arduino-led-interface: src/actuators/arduino-led-interface/InterfaceLEDStrip/CMakeFiles/arduino-led-interface.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --red --bold "Linking CXX executable ../../../../bin/arduino-led-interface"
 	cd /home/teiband/wearhap/src/actuators/arduino-led-interface/InterfaceLEDStrip && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/arduino-led-interface.dir/link.txt --verbose=$(VERBOSE)

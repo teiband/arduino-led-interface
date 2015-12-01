@@ -10,6 +10,7 @@
 #include "PatternGenerator.h"
 #include <getopt.h>
 #include <iostream>
+#include <unistd.h> // for sleep()
 #include <ArduinoData.h>
 
 using namespace std;
@@ -31,17 +32,16 @@ int main(int argc, char *argv[])
 
     ArduinoData rtdb_obj(DBC, "ArduinoData");
 
-    PatternGenerator pg(rtdb_obj.subobj_p);
+    PatternGenerator pg(rtdb_obj.subobj_p->pattern);
 
     cout << "Searching RTDB object \"ArduinoData\"... ";
-    Road.RTDBSearchWait("a2_eigenfahrspur");
+    rtdb_obj.RTDBSearchWait("a2_eigenfahrspur");
     cout << "done" << endl;
 
     cout << "Entering loop and generating some patterns" << endl;
     while (1) {
 
-        // TODO implement funcionality
-        pg.update();
+        // TODO implement pattern here, its directly written into pattern_t pattern given in constructor from rtdb object
 
         cout << "Write to RTDB ...";
         rtdb_obj.RTDBWrite();

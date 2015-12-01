@@ -4,9 +4,10 @@
 #define NUMPIXELS       240
 #define PATTERN_DEPTH   4
 
-#include <array>
+#include <vector>
 
-typedef std::array< std::array<char, PATTERN_DEPTH>, NUMPIXELS> pattern_t;
+typedef std::vector< char > color_t;
+typedef std::vector< color_t > pattern_t;
 
 
 #endif // ARDUINO_CONFIG_H
